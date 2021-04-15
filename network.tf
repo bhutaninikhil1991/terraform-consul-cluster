@@ -9,7 +9,7 @@ provider "aws" {
 resource "aws_vpc" "consul-cluster" {
   cidr_block = "10.0.0.0/16" // i.e. 10.0.0.0 to 10.0.255.255
   enable_dns_hostnames = true
-  tags { 
+  tags = {
     Name = "Consul Cluster VPC" 
     Project = "consul-cluster"
   }
@@ -18,7 +18,7 @@ resource "aws_vpc" "consul-cluster" {
 //  Create an Internet Gateway for the VPC.
 resource "aws_internet_gateway" "consul-cluster" {
   vpc_id = "${aws_vpc.consul-cluster.id}"
-  tags {
+  tags = {
     Name = "Consul Cluster IGW"
     Project = "consul-cluster"
   }
@@ -28,10 +28,10 @@ resource "aws_internet_gateway" "consul-cluster" {
 resource "aws_subnet" "public-a" {
   vpc_id            = "${aws_vpc.consul-cluster.id}"
   cidr_block        = "10.0.1.0/24" // i.e. 10.0.1.0 to 10.0.1.255
-  availability_zone = "ap-southeast-1a"
+  availability_zone = "us-west-2a"
   map_public_ip_on_launch = true
   depends_on = ["aws_internet_gateway.consul-cluster"]
-  tags { 
+  tags = {
     Name = "Consul Cluster Public Subnet" 
     Project = "consul-cluster"
   }
@@ -39,10 +39,10 @@ resource "aws_subnet" "public-a" {
 resource "aws_subnet" "public-b" {
   vpc_id            = "${aws_vpc.consul-cluster.id}"
   cidr_block        = "10.0.2.0/24" // i.e. 10.0.2.0 to 10.0.1.255
-  availability_zone = "ap-southeast-1b"
+  availability_zone = "us-west-2b"
   map_public_ip_on_launch = true
   depends_on = ["aws_internet_gateway.consul-cluster"]
-  tags { 
+  tags = {
     Name = "Consul Cluster Public Subnet" 
     Project = "consul-cluster"
   }
@@ -55,7 +55,7 @@ resource "aws_route_table" "public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = "${aws_internet_gateway.consul-cluster.id}"
   }
-  tags {
+  tags = {
     Name = "Consul Cluster Public Route Table"
     Project = "consul-cluster"
   }
@@ -80,20 +80,32 @@ resource "aws_security_group" "consul-cluster-vpc" {
   vpc_id = "${aws_vpc.consul-cluster.id}"
 
   ingress {
-    from_port = "0"   to_port = "0"    protocol = "-1"   self = true
+    from_port = "0"
+    to_port = "0"
+    protocol = "-1"
+    self = true
   }
 
   egress {
-    from_port = "0"   to_port = "0"    protocol = "-1"   self = true
+    from_port = "0"
+    to_port = "0"
+    protocol = "-1"
+    self = true
   }
   egress {
-    from_port = "80"  to_port = "80"   protocol = "6"    cidr_blocks = ["0.0.0.0/0"]
+    from_port = "80"
+    to_port = "80"
+    protocol = "6"
+    cidr_blocks = ["0.0.0.0/0"]
   }
   egress {
-    from_port = "443" to_port = "443"  protocol = "6"    cidr_blocks = ["0.0.0.0/0"]
+    from_port = "443"
+    to_port = "443"
+    protocol = "6"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags { 
+  tags = {
     Name = "Consul Cluster Internal VPC" 
     Project = "consul-cluster"
   }
@@ -106,19 +118,28 @@ resource "aws_security_group" "consul-cluster-public-web" {
   vpc_id = "${aws_vpc.consul-cluster.id}"
 
   ingress {
-    from_port = 80   to_port = 80   protocol = "tcp"  cidr_blocks = ["0.0.0.0/0"]
+    from_port = 80
+    to_port = 80
+    protocol = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
-    from_port = 443  to_port = 443  protocol  = "tcp" cidr_blocks = ["0.0.0.0/0"]
+    from_port = 443
+    to_port = 443
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   //  The Consul admin UI is exposed over 8500...
   ingress {
-    from_port = 8500 to_port = 8500 protocol  = "tcp" cidr_blocks = ["0.0.0.0/0"]
+    from_port = 8500
+    to_port = 8500
+    protocol  = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags { 
+  tags = {
     Name = "Consul Cluster Public Web" 
     Project = "consul-cluster"
   }
@@ -137,7 +158,7 @@ resource "aws_security_group" "consul-cluster-public-ssh" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags { 
+  tags = {
     Name = "Consul Cluster Public SSH" 
     Project = "consul-cluster"
   }

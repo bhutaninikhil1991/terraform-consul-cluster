@@ -39,6 +39,7 @@ resource "aws_elb" "consul-lb" {
         "${aws_security_group.consul-cluster-public-web.id}",
     ]
     subnets = ["${aws_subnet.public-a.id}", "${aws_subnet.public-b.id}"]
+    cross_zone_load_balancing = true
     listener {
         instance_port = 8500
         instance_protocol = "http"

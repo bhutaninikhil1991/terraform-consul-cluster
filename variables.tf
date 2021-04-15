@@ -8,5 +8,5 @@ variable "secret_key" {
 
 variable "region"     { 
   description = "AWS Region"
-  default     = "ap-southeast-1" 
+  default     = "us-west-2"
 }

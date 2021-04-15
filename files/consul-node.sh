@@ -38,7 +38,7 @@ yum install -y aws-cli
 
 # A few variables we will refer to later...
 ASG_NAME=consul-asg
-REGION=ap-southeast-1
+REGION=us-west-2
 EXPECTED_SIZE=5
 
 # Install the AWS CLI.
